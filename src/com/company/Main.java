@@ -222,7 +222,7 @@ public class Main  {
             Task t = tasks.get(i);
             if (t.project.id == id){
                 System.out.println(tasks.get(i));
-            }else{System.out.print("Ошибка задач в проекте нет или их присвоить\n");}
+            }else{System.out.print("Вминание задач в проекте c id "+id+" нет или их присвоить\n");}
         }
     }
     private static void findUser(int id) {
@@ -231,7 +231,7 @@ public class Main  {
                 Task t = tasks.get(i);
                 if (t.user.id == id){
                     System.out.println(tasks.get(i));
-                }else{System.out.print("Ошибка задач у пользователя нет или их ему нужно присвоить\n");}
+                }else{System.out.print("Внимание задач у пользователя c id "+id+" нет или их ему нужно присвоить\n");}
             }
     }
     public static void saveProject(){
