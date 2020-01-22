@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -32,8 +34,6 @@ public class Main  {
         UIManager.put("FileChooser.saveInLabelText"     , "Сохранить в директории");
         UIManager.put("FileChooser.folderNameLabelText" , "Путь директории"       );
 
-
-
         Scanner scan = new Scanner(System.in);
         int x = 0;
         int id;
@@ -41,21 +41,21 @@ public class Main  {
         while (!"18".equals(s)){
             System.out.println("1. Создать пользователя");
             System.out.println("2. получить список всех задач, назначенных на конкретного исполнителя");
-            System.out.println("3. Удалить пользователя");
+            System.out.println("3. Удалить пользователей");
             System.out.println("4. получить список всех задач в проекте");
             System.out.println("5. Вывети всех пользователей");
             System.out.println("6. Создать задачу");
             System.out.println("7. - ");
-            System.out.println("8. Удалить задачу");
+            System.out.println("8. Удалить задачи");
             System.out.println("9. - ");
             System.out.println("10. Вывети все задачи");
             System.out.println("11. Создать проект");
             System.out.println("12. - ");
-            System.out.println("13. Удалить проект");
+            System.out.println("13. Удалить проекты");
             System.out.println("14. - ");
             System.out.println("15. Вывети все проекты");
             System.out.println("16. Сохранение bug tracking system в файл");
-            System.out.println("17. Загрузка bug tracking system из файла");
+            System.out.println("17. Загрузка bug tracking system из файл");
             System.out.println("18. Выход");
             s = scan.next();
 
@@ -80,11 +80,12 @@ public class Main  {
                     break;
                 case 3:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Введите id пользователя для удаления \n");
-                    if(scan.hasNextInt()) {
-                         id = scan.nextInt();
-                    } else {System.out.println("Введите число!"); break;}
-                    deleteUser(id);
+                    System.out.print("Удаляются все пользователи и все  задачи \n");
+//                    System.out.print("Введите id пользователя для удаления \n");
+//                    if(scan.hasNextInt()) {
+//                         id = scan.nextInt();
+//                    } else {System.out.println("Введите число!"); break;}
+                    deleteUser();
                     break;
                 case 4:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -107,11 +108,12 @@ public class Main  {
                     break;
                 case 8:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Введите id задачи для удаления \n");
-                    if(scan.hasNextInt()) {
-                        id = scan.nextInt();
-                    } else {System.out.println("Введите число!"); break;}
-                    deleteTask(id);
+                    System.out.print("Удаляются все задачи \n");
+//                    System.out.print("Введите id задачи для удаления \n");
+//                    if(scan.hasNextInt()) {
+//                        id = scan.nextInt();
+//                    } else {System.out.println("Введите число!"); break;}
+                    deleteTask();
                     break;
                 case 9:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -129,11 +131,12 @@ public class Main  {
                     break;
                 case 13:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Введите id проекта для удаления \n");
-                    if(scan.hasNextInt()) {
-                        id = scan.nextInt();
-                    } else {System.out.println("Введите число!"); break;}
-                    deleteProject(id);
+                    System.out.print("Удаляются все проекты и удаляеюся все задачи! \n");
+//                    System.out.print("Введите id проекта для удаления \n");
+//                    if(scan.hasNextInt()) {
+//                        id = scan.nextInt();
+//                    } else {System.out.println("Введите число!"); break;}
+                    deleteProject();
                     break;
                 case 14:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -144,42 +147,83 @@ public class Main  {
                     break;
                 case 16:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Сохранение в файл\n");
-                    new JFileChooserTest();
-//                    try {
-//                        User u = new User();
-//                        FileOutputStream fos = new FileOutputStream("имя файла");
-//                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-//                        oos.close();
-//                        FileInputStream fis = new FileInputStream("имя коробки");
-//                        ObjectInputStream ois = new ObjectInputStream(fis);
-//                        Object obj = ois.readObject();
-//                        u = (User) obj;
-//                        ois.close();
-//
-//                    }catch(IOException ex){
-//                            ex.printStackTrace();
-//                        }catch(ClassNotFoundException ex){
-//                            ex.printStackTrace();}
-                    //saveArrayList();
+                    try {
+                    System.out.print("Сохранение пользователей в файл (*.tmp)\n");
+                    String n = scan.next();
+                    FileOutputStream fos = new FileOutputStream(n);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(users);
+                    oos.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка\n");
+                            ex.printStackTrace();
+                            break;
+                        }
+                    try {
+                        System.out.print("Сохранение проектов в файл (*.tmp)\n");
+                        String n = scan.next();
+                        FileOutputStream fos = new FileOutputStream(n);
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(projects);
+                        oos.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка\n");
+                        ex.printStackTrace();
+                        break;
+                    }
+                    try {
+                        System.out.print("Сохранение задач в файл (*.tmp)\n");
+                        String n = scan.next();
+                        FileOutputStream fos = new FileOutputStream(n);
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(tasks);
+                        oos.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка\n");
+                        ex.printStackTrace();
+                        break;
+                    }
                     break;
                 case 17:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Загрузка из файла\n");
-                    //loadArrayList();
+                    try {
+                    System.out.print("Загрузка пользователей из файла (*.tmp)\n");
+                    String n = scan.next();
+                    FileInputStream fis = new FileInputStream(n);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    users = (ArrayList<User>) ois.readObject();
+                    System.out.print(users+ "Загрузка из файла\n");
+                    ois.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка\n");
+                        ex.printStackTrace();
+                        break;
+                    }
+                    try {
+                        System.out.print("Загрузка проектов из файла (*.tmp)\n");
+                        String n = scan.next();
+                        FileInputStream fis = new FileInputStream(n);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        projects = (ArrayList<Project>) ois.readObject();
+                        System.out.print(projects+ "Загрузка из файла\n");
+                        ois.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка\n");
+                        ex.printStackTrace();
+                        break;
+                    }
                     break;
             }
         }
         System.out.println("До свидания!");
     }
-
     private static void findProject(int id) {
         System.out.print("Все задачи в проекте с id " + id +"\n");
         for(int i = 0; i< tasks.size(); i++) {
             Task t = tasks.get(i);
             if (t.project.id == id){
                 System.out.println(tasks.get(i));
-            }
+            }else{System.out.print("Ошибка задач в проекте нет или их присвоить\n");}
         }
     }
     private static void findUser(int id) {
@@ -188,7 +232,7 @@ public class Main  {
                 Task t = tasks.get(i);
                 if (t.user.id == id){
                     System.out.println(tasks.get(i));
-                }
+                }else{System.out.print("Ошибка задач у пользователя нет или их ему нужно присвоить\n");}
             }
     }
     public static void saveProject(){
@@ -202,15 +246,28 @@ public class Main  {
         System.out.print(u + " \n");
         projects.add(u);
     }
-    public static void deleteProject(int id){
-        try {
-            projects.remove(id);
-            System.out.print("Проект с id " +id +" удалён \n");
+    public static void deleteProject(){
+//        try {
+//            projects.remove(id);
+//            System.out.print("Проект с id " +id +" удалён \n");
+//            int psize = projects.size();
+//            for(int i = 0; i< psize; i++) {
+//                Project t = projects.get(i);
+//                System.out.print(t +"\n");
+//                t.id = projects.size();
+//                System.out.print(t.id +"\n");
+//                Collections.sort();
+//                projects.sort();
+//                projects.set(t.id, t);
+//            }
+//            System.out.print("список проектов изменился \n");
+//            tasks.clear();
+//        }catch (Exception e) {
+//            System.out.print("Проекта с таким id нет \n");
+//        }
+            projects.clear();
             tasks.clear();
-        }catch (Exception e) {
-            System.out.print("Проекта с таким id нет \n");
-        }
-        System.out.print("deleteProject\n");
+        System.out.print("Удалены все проекты и задачи\n");
     }
     public static void  getAllProject() {
         System.out.print(projects.toString()+"\n");
@@ -245,15 +302,17 @@ public class Main  {
         users.add(u);
         System.out.print(users.toString()+"\n");
     }
-    public static void deleteUser(int id){
-        try {
-            users.remove(id);
-            System.out.print("Пользователя с id " + id +" удалён \n");
-            tasks.clear();
-        }catch (Exception e) {
-            System.out.print("Пользователя с таким id нет \n");
-        }
-        System.out.print("deleteUser\n");
+    public static void deleteUser(){
+//        try {
+////            users.remove(id);
+////            System.out.print("Пользователя с id " + id +" удалён \n");
+////            tasks.clear();
+////        }catch (Exception e) {
+////            System.out.print("Пользователя с таким id нет \n");
+////        }
+        users.clear();
+        tasks.clear();
+        System.out.print("Удалены все пользоватеи и задачи\n");
     }
     public static void getAllUser(){
         System.out.print(users.toString()+"\n");
@@ -379,14 +438,15 @@ public class Main  {
         tasks.add(u);
         System.out.print(tasks + " \n");
     }
-    public static void deleteTask(int id){
-        try {
-            tasks.remove(id);
-            System.out.print("Задача с id " +id +" удалёна \n");
-        }catch (Exception e) {
-            System.out.print("Задачи с таким id нет \n");
-        }
-        System.out.print("deleteTask\n");
+    public static void deleteTask(){
+//        try {
+//            tasks.remove(id);
+//            System.out.print("Задача с id " +id +" удалёна \n");
+//        }catch (Exception e) {
+//            System.out.print("Задачи с таким id нет \n");
+//        }
+        tasks.clear();
+        System.out.print("Удалены все задачи\n");
     }
     public static void  getAllTask(){
         System.out.print(tasks.toString()+"\n");
@@ -403,30 +463,5 @@ public class Main  {
         }
         return task;
     }
-//    @FXML
-//    private void hndlOpenFile(ActionEvent event) {
-//        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
-//        fileChooser.setTitle("Open Document");//Заголовок диалога
-//        FileChooser.ExtensionFilter extFilter =
-//                new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");//Расширение
-//        fileChooser.getExtensionFilters().add(extFilter);
-//        File file = fileChooser.showOpenDialog(CodeNote.mainStage);//Указываем текущую сцену CodeNote.mainStage
-//        if (file != null) {
-//            //Open
-//            System.out.println("Процесс открытия файла");
-//        }
-//    }
-//    @FXML
-//    private void hndlOpenFile(ActionEvent event) {
-//        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
-//        fileChooser.setTitle("Save Document");//Заголовок диалога
-//        FileChooser.ExtensionFilter extFilter =
-//                new FileChooser.ExtensionFilter("HTML files (*.html)", "*.html");//Расширение
-//        fileChooser.getExtensionFilters().add(extFilter);
-//        File file = fileChooser.showSaveDialog(CodeNote.mainStage);//Указываем текущую сцену CodeNote.mainStage
-//        if (file != null) {
-//            //Save
-//            System.out.println("Процесс открытия файла");
-//        }
-//    }
+
 }
