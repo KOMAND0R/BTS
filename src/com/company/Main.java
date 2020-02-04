@@ -1,12 +1,5 @@
 package com.company;
-//import javafx.fxml.FXML;
-//import javafx.stage.FileChooser;
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.event.ActionEvent;
 import java.io.*;
-import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -18,52 +11,35 @@ public class Main  {
     private static Classtask classtask;
     private static Priority priority;
     private static Status status;
-    static Task task = new Task();
     static Project project = new Project();
     static Scanner scan = new Scanner(System.in);
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-
-        // Локализация компонентов окна JFileChooser
-        UIManager.put("FileChooser.saveButtonText"      , "Сохранить"             );
-        UIManager.put("FileChooser.openButtonText"      , "Открыть"               );
-        UIManager.put("FileChooser.cancelButtonText"    , "Отмена"                );
-        UIManager.put("FileChooser.fileNameLabelText"   , "Наименование файла"    );
-        UIManager.put("FileChooser.filesOfTypeLabelText", "Типы файлов"           );
-        UIManager.put("FileChooser.lookInLabelText"     , "Директория"            );
-        UIManager.put("FileChooser.saveInLabelText"     , "Сохранить в директории");
-        UIManager.put("FileChooser.folderNameLabelText" , "Путь директории"       );
-
+    public static void main(String[] args) throws ClassNotFoundException {
         Scanner scan = new Scanner(System.in);
         int x = 0;
         int id;
         String s ="";
-        while (!"18".equals(s)){
+        while (!"15".equals(s)){
             System.out.println("1. Создать пользователя");
-            System.out.println("2. получить список всех задач, назначенных на конкретного исполнителя");
-            System.out.println("3. Удалить пользователей");
-            System.out.println("4. получить список всех задач в проекте");
+            System.out.println("2. Получить список всех задач, назначенных на конкретного исполнителя");
+            System.out.println("3. Удалить пользователя");
+            System.out.println("4. Получить список всех задач в проекте");
             System.out.println("5. Вывети всех пользователей");
             System.out.println("6. Создать задачу");
             System.out.println("7. - ");
-            System.out.println("8. Удалить задачи");
-            System.out.println("9. - ");
+            System.out.println("8. Удалить задачу");
+            System.out.println("9. Сохранить BTS в файл");
             System.out.println("10. Вывети все задачи");
             System.out.println("11. Создать проект");
-            System.out.println("12. - ");
-            System.out.println("13. Удалить проекты");
-            System.out.println("14. - ");
-            System.out.println("15. Вывети все проекты");
-            System.out.println("16. Сохранение bug tracking system в файл");
-            System.out.println("17. Загрузка bug tracking system из файл");
-            System.out.println("18. Выход");
+            System.out.println("12. Загрузить BTS из файла");
+            System.out.println("13. Удалить проект");
+            System.out.println("14. Вывети все проекты");
+            System.out.println("15. Выход");
             s = scan.next();
-
             try {
                 x = Integer.parseInt(s);
             } catch (NumberFormatException e){
                 System.out.println("Неверный ввод");
             }
-
             switch (x){
                 case 1:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -79,12 +55,11 @@ public class Main  {
                     break;
                 case 3:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Удаляются все пользователи и все  задачи \n");
-//                    System.out.print("Введите id пользователя для удаления \n");
-//                    if(scan.hasNextInt()) {
-//                         id = scan.nextInt();
-//                    } else {System.out.println("Введите число!"); break;}
-                    deleteUser();
+                    System.out.print("Введите id пользователя для удаления \n");
+                    if(scan.hasNextInt()) {
+                         id = scan.nextInt();
+                    } else {System.out.println("Введите число!"); break;}
+                    deleteUser(id);
                     break;
                 case 4:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -95,7 +70,7 @@ public class Main  {
                     findProject(id);
                     break;
                 case 5:
-                    System.out.print(x+" "+"Пункт меню\n");;
+                    System.out.print(x+" "+"Пункт меню\n");
                     getAllUser();
                     break;
                 case 6:
@@ -107,15 +82,28 @@ public class Main  {
                     break;
                 case 8:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Удаляются все задачи \n");
-//                    System.out.print("Введите id задачи для удаления \n");
-//                    if(scan.hasNextInt()) {
-//                        id = scan.nextInt();
-//                    } else {System.out.println("Введите число!"); break;}
-                    deleteTask();
+                    System.out.print("Введите id задачи для удаления \n");
+                    if(scan.hasNextInt()) {
+                        id = scan.nextInt();
+                    } else {System.out.println("Введите число!"); break;}
+                    deleteTask(id);
                     break;
                 case 9:
                     System.out.print(x+" "+"Пункт меню\n");
+                    try{
+                        System.out.print("Сохранение BTS в файл. Введите имя файла:\n");
+                        String n = scan.next();
+                        FileOutputStream fos = new FileOutputStream(n);
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(users);
+                        oos.writeObject(projects);
+                        oos.writeObject(tasks);
+                        oos.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка сохранения повторите попытку\n");
+                        //ex.printStackTrace();
+                        break;
+                    }
                     break;
                 case 10:
                     System.out.print(x+" "+"Пункт меню\n");
@@ -127,112 +115,63 @@ public class Main  {
                     break;
                 case 12:
                     System.out.print(x+" "+"Пункт меню\n");
+                    try {
+                        System.out.print("Загрузка BTS из файла. Введите имя файла:\n");
+                        String n = scan.next();
+                        if( n == null){
+                            System.out.print("Введите имя файла\n");
+                            return;
+                        }
+                        FileInputStream fis = new FileInputStream(n);
+                        ObjectInputStream ois = new ObjectInputStream(fis);
+                        users = (ArrayList<User>) ois.readObject();
+                        projects = (ArrayList<Project>) ois.readObject();
+                        tasks = (ArrayList<Task>) ois.readObject();
+                        System.out.print("Загрузка из файла\n"+users+projects+tasks);
+                        ois.close();
+                    }catch(IOException ex){
+                        System.out.print("Ошибка введите правильно имя файла\n");
+                        //ex.printStackTrace();
+                        break;
+                    }
                     break;
                 case 13:
                     System.out.print(x+" "+"Пункт меню\n");
-                    System.out.print("Удаляются все проекты и удаляеюся все задачи! \n");
-//                    System.out.print("Введите id проекта для удаления \n");
-//                    if(scan.hasNextInt()) {
-//                        id = scan.nextInt();
-//                    } else {System.out.println("Введите число!"); break;}
-                    deleteProject();
+                    System.out.print("Введите id проекта для удаления \n");
+                    if(scan.hasNextInt()) {
+                        id = scan.nextInt();
+                    } else {System.out.println("Введите число!"); break;}
+                    deleteProject(id);
                     break;
                 case 14:
                     System.out.print(x+" "+"Пункт меню\n");
-                    break;
-                case 15:
-                    System.out.print(x+" "+"Пункт меню\n");
                     getAllProject();
-                    break;
-                case 16:
-                    System.out.print(x+" "+"Пункт меню\n");
-                    try {
-                    System.out.print("Сохранение пользователей в файл (*.tmp)\n");
-                    String n = scan.next();
-                    FileOutputStream fos = new FileOutputStream(n);
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(users);
-                    oos.close();
-                    }catch(IOException ex){
-                        System.out.print("Ошибка\n");
-                            ex.printStackTrace();
-                            break;
-                        }
-                    try {
-                        System.out.print("Сохранение проектов в файл (*.tmp)\n");
-                        String n = scan.next();
-                        FileOutputStream fos = new FileOutputStream(n);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(projects);
-                        oos.close();
-                    }catch(IOException ex){
-                        System.out.print("Ошибка\n");
-                        ex.printStackTrace();
-                        break;
-                    }
-                    try {
-                        System.out.print("Сохранение задач в файл (*.tmp)\n");
-                        String n = scan.next();
-                        FileOutputStream fos = new FileOutputStream(n);
-                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-                        oos.writeObject(tasks);
-                        oos.close();
-                    }catch(IOException ex){
-                        System.out.print("Ошибка\n");
-                        ex.printStackTrace();
-                        break;
-                    }
-                    break;
-                case 17:
-                    System.out.print(x+" "+"Пункт меню\n");
-                    try {
-                    System.out.print("Загрузка пользователей из файла (*.tmp)\n");
-                    String n = scan.next();
-                    FileInputStream fis = new FileInputStream(n);
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    users = (ArrayList<User>) ois.readObject();
-                    System.out.print(users+ "Загрузка из файла\n");
-                    ois.close();
-                    }catch(IOException ex){
-                        System.out.print("Ошибка\n");
-                        ex.printStackTrace();
-                        break;
-                    }
-                    try {
-                        System.out.print("Загрузка проектов из файла (*.tmp)\n");
-                        String n = scan.next();
-                        FileInputStream fis = new FileInputStream(n);
-                        ObjectInputStream ois = new ObjectInputStream(fis);
-                        projects = (ArrayList<Project>) ois.readObject();
-                        System.out.print(projects+ "Загрузка из файла\n");
-                        ois.close();
-                    }catch(IOException ex){
-                        System.out.print("Ошибка\n");
-                        ex.printStackTrace();
-                        break;
-                    }
                     break;
             }
         }
         System.out.println("До свидания!");
     }
     private static void findProject(int id) {
+        boolean check = false;
         System.out.print("Все задачи в проекте с id " + id +"\n");
-        for(int i = 0; i< tasks.size(); i++) {
-            Task t = tasks.get(i);
-            if (t.project.id == id){
-                System.out.println(tasks.get(i));
-            }else{System.out.print("Вминание задач в проекте c id "+id+" нет или их присвоить\n");}
+        for (Task t : tasks) {
+            if (t.project.id == id) {
+                System.out.println(t);
+                check = true;
+            }
         }
+        if(!check){System.out.print("Вминание задач в проекте c id " + id + " нет или их нужно присвоить\n");}
     }
     private static void findUser(int id) {
+        boolean check = false;
         System.out.print("Все задачи исполнителя с id " + id +"\n");
-            for(int i = 0; i< tasks.size(); i++) {
-                Task t = tasks.get(i);
-                if (t.user.id == id){
-                    System.out.println(tasks.get(i));
-                }else{System.out.print("Внимание задач у пользователя c id "+id+" нет или их ему нужно присвоить\n");}
+        for (Task t : tasks) {
+            if (t.user.id == id) {
+                System.out.println(t);
+                check = true;
             }
+        }
+        if(!check){System.out.print("Внимание задач у пользователя c id "+id+" нет или их ему нужно присвоить\n");}
     }
     public static void saveProject(){
         System.out.println("Введите проект.");
@@ -245,35 +184,32 @@ public class Main  {
         System.out.print(u + " \n");
         projects.add(u);
     }
-    public static void deleteProject(){
-//        try {
-//            projects.remove(id);
-//            System.out.print("Проект с id " +id +" удалён \n");
-//            int psize = projects.size();
-//            for(int i = 0; i< psize; i++) {
-//                Project t = projects.get(i);
-//                System.out.print(t +"\n");
-//                t.id = projects.size();
-//                System.out.print(t.id +"\n");
-//                Collections.sort();
-//                projects.sort();
-//                projects.set(t.id, t);
-//            }
-//            System.out.print("список проектов изменился \n");
-//            tasks.clear();
-//        }catch (Exception e) {
-//            System.out.print("Проекта с таким id нет \n");
-//        }
-            projects.clear();
-            tasks.clear();
-        System.out.print("Удалены все проекты и задачи\n");
+    public static void deleteProject(int id){
+        for (Task t : tasks) {
+            if (t.project.id == id) {
+                System.out.println("Внимание для удаления проекта сначала удалите все связанные с ним задачи\n");
+                return;
+            }
+        }
+        try {
+            projects.remove(id);
+            System.out.print("Проект с id " + id +" удалён \n");
+            for(int i = id; i< projects.size(); i++) {
+                Project t = projects.get(i);
+                t.id = i;
+                projects.set(i,t);
+            }
+            System.out.print("ID проектов обновлены\n");
+        }catch (Exception e) {
+            System.out.print("Проектов с таким id нет \n");
+        }
     }
     public static void  getAllProject() {
         System.out.print(projects.toString()+"\n");
         System.out.print(projects.size()+" size projects\n");
     }
     public static Project getProject(int id){
-        Project project = null;
+        Project project;
         try  {
             project = projects.get(id);
         } catch (Exception e) {
@@ -287,9 +223,6 @@ public class Main  {
         System.out.print("Id пользователя присваивается автоматически \n");
         int id = users.size();
         System.out.println("id = " + id + "\n");
-        // if(scan.hasNextInt()) {
-        //  id = scan.nextInt();
-        //  } else {System.out.println("Введите число!"); }
         System.out.print("Введите name пользователя:");
         String name = scan.next();
         System.out.print("Введите email пользователя:");
@@ -299,26 +232,34 @@ public class Main  {
         User u = new User(id,name,email,country);
         System.out.print(u + " \n");
         users.add(u);
-        System.out.print(users.toString()+"\n");
     }
-    public static void deleteUser(){
-//        try {
-////            users.remove(id);
-////            System.out.print("Пользователя с id " + id +" удалён \n");
-////            tasks.clear();
-////        }catch (Exception e) {
-////            System.out.print("Пользователя с таким id нет \n");
-////        }
-        users.clear();
-        tasks.clear();
-        System.out.print("Удалены все пользоватеи и задачи\n");
+    public static void deleteUser(int id){
+        for (Task t : tasks) {
+            if (t.user.id == id) {
+                System.out.println("Внимание для удаления пользователя сначала удалите все его задачи\n");
+                return;
+            }
+        }
+        try {
+            users.remove(id);
+            System.out.print("Пользователя с id " + id +" удалён \n");
+            for(int i = id; i< users.size(); i++) {
+                User t = users.get(i);
+                t.id = i;
+                users.set(i,t);
+            }
+            System.out.print("ID пользователей обновлены\n");
+        }catch (Exception e) {
+            System.out.print("Пользователя с таким id нет \n");
+        }
+
     }
     public static void getAllUser(){
         System.out.print(users.toString()+"\n");
         System.out.print(users.size()+" size users\n");
     }
     public static User getUser(int i){
-        User user = null;
+        User user;
         try  {
             user = users.get(i);
         } catch (Exception e) {
@@ -349,10 +290,9 @@ public class Main  {
         String name = scan.next();
         System.out.print("Введите title задачи:");
         String title = scan.next();
-
         System.out.print("Выберите Classtask (Task press 1 or Bug press 2) задачи:\n");
         int q = 0;
-        String w ="";
+        String w;
         w = scan.next();
         try {
             q = Integer.parseInt(w);
@@ -369,7 +309,7 @@ public class Main  {
                 System.out.print("Bug\n");
                 break;
         }
-        System.out.print("Введите Status (New press 1 or InProgress press 2 or OnReview press 3 or Closed press 4 задачи:\n");
+        System.out.print("Введите Status (New press 1 or InProgress press 2 or OnReview press 3 or Closed press 4) задачи:\n");
         w = scan.next();
         try {
             q = Integer.parseInt(w);
@@ -403,7 +343,6 @@ public class Main  {
         }
         switch (q){
             case 1:
-
                 priority = Priority.Low;
                 System.out.print("Low\n");
                 break;
@@ -435,32 +374,23 @@ public class Main  {
         Task u = new Task(id,project,name,title,classtask,status,priority,user,description);
         System.out.print(u + " \n");
         tasks.add(u);
-        System.out.print(tasks + " \n");
     }
-    public static void deleteTask(){
-//        try {
-//            tasks.remove(id);
-//            System.out.print("Задача с id " +id +" удалёна \n");
-//        }catch (Exception e) {
-//            System.out.print("Задачи с таким id нет \n");
-//        }
-        tasks.clear();
-        System.out.print("Удалены все задачи\n");
+    public static void deleteTask(int id){
+        try {
+            tasks.remove(id);
+            System.out.print("Задача с id " + id +" удалён \n");
+            for(int i = id; i< tasks.size(); i++) {
+                Task t = tasks.get(i);
+                t.id = i;
+                tasks.set(i,t);
+            }
+            System.out.print("ID задач обновлены\n");
+        }catch (Exception e) {
+            System.out.print("Задачи с таким id нет \n");
+        }
     }
     public static void  getAllTask(){
         System.out.print(tasks.toString()+"\n");
         System.out.print(tasks.size()+" size tasks\n");
     }
-    public Task getTask(int id){
-        Task task = null;
-        try  {
-            task = tasks.get(id);
-        } catch (Exception e) {
-            System.out.print("Задачи с таким id нет \n");
-            // e.printStackTrace();
-            return null;
-        }
-        return task;
-    }
-
 }

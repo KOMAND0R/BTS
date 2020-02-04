@@ -126,6 +126,6 @@ public class Task implements Serializable {
                 "priority='" + priority + '\'' +
                 "user='" + user + '\'' +
                 "description='" + description + '\'' +
-                '}';
+                '}'+ '\n';
     }
 }

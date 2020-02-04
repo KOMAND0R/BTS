@@ -1,18 +1,12 @@
 package com.company;
 
 import java.io.Serializable;
-//import java.util.ArrayList;
 
 public class User implements Serializable {
-//    ArrayList<User> u;
     protected int id;
     protected String name;
     protected String email;
     protected String country;
-
-//    public User(ArrayList<User> u){
-//        this.u = u;
-//    }
     public User() {
     }
 
@@ -68,6 +62,6 @@ public class User implements Serializable {
                 "name='" + name + '\'' +
                 "email='" + email + '\'' +
                 "country='" + country + '\'' +
-                '}';
+                '}'+ '\n';
     }
 }
